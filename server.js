@@ -14,7 +14,19 @@ app.get('/hello', (req, res) => {
 });
 
 // Start the HTTP server and listen on the configured port
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`Visit http://localhost:${PORT}/hello to see the response`);
+});
+
+// Basic error handling for server startup issues
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Error: Port ${PORT} is already in use`);
+    console.error('Please try a different port or stop the other process');
+    process.exit(1);
+  } else {
+    console.error('Server error:', error.message);
+    process.exit(1);
+  }
 });
